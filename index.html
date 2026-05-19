@@ -1,0 +1,131 @@
+<?php
+// Bangla PDF Voter Search System
+// UTF-8 Fixed Version
+
+header('Content-Type: text/html; charset=utf-8');
+
+$search = $_GET['search'] ?? '';
+
+$data = file_get_contents("voters.txt");
+
+// UTF Fix
+$data = mb_convert_encoding($data, 'UTF-8', 'auto');
+
+?>
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Voter Search</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:'Noto Sans Bengali', sans-serif;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.search-box{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#1e293b;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    padding:15px 25px;
+    border:none;
+    border-radius:10px;
+    background:#06b6d4;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:15px;
+    border:1px solid #334155;
+}
+
+.highlight{
+    color:#22d3ee;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>বাংলাদেশ ভোটার সার্চ</h1>
+
+<form method="GET">
+
+<div class="search-box">
+
+<input type="text" name="search" placeholder="নাম / ভোটার নাম্বার লিখুন">
+
+<button type="submit">Search</button>
+
+</div>
+
+</form>
+
+<?php
+
+if($search != ''){
+
+    $blocks = explode("০০", $data);
+
+    $found = false;
+
+    foreach($blocks as $block){
+
+        if(mb_stripos($block, $search) !== false){
+
+            $found = true;
+
+            echo '<div class="card">';
+            echo nl2br(htmlspecialchars($block));
+            echo '</div>';
+        }
+    }
+
+    if(!$found){
+
+        echo "<h3>কোন তথ্য পাওয়া যায়নি</h3>";
+    }
+}
+
+?>
+
+</div>
+
+</body>
+</html>
